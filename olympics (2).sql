@@ -4,9 +4,6 @@ use Olympic_2021;
 create table Games(Game_id int,Game_name varchar(20),constraint pk primary key(Game_id));
 insert into Games values(1,'Shooting'),(2,'Badminton'),(3,'Boxing'),(4,'Karate'),(5,'Swimming'),(6,'Table tennis'),(7,'Wrestling'),(8,'Weightlifting'),(9,'Cycling road'),(10,'Football');
 select * from Games;
-drop table Games;
-drop database Olympic_2021;
-drop table Athletes;
 create table Athletes(Athlete_id int,Athlete_name varchar(30),Athlete_dob timestamp default current_timestamp on update current_timestamp,Athlete_gender enum('Female','Male'),
 Athlete_country varchar(20),Athlete_weight int,Athlete_phonenumber bigint,
 Game_id int,constraint pk primary key (Athlete_id),constraint ck check(Athlete_weight>30),constraint uk unique(Athlete_name,Athlete_phonenumber),
@@ -46,7 +43,7 @@ select * from Athletes;
 create table Medals(Medal_id int ,Medal_name varchar(10),constraint pk primary key(Medal_id));
 insert into Medals values(1,'Gold'),(2,'Silver'),(3,'Bronze');
 select * from Medals;
-drop table Medals;
+
 create table Events(Event_id int,Athlete_id int,Medal_id int,Event_place varchar(50),Event_date date,
 constraint fKk foreign key(Medal_id) references Medals(Medal_id),constraint abc foreign key (Athlete_id) references Athletes(Athlete_id));
 insert into Events values(201,1001,3,'Asaka shooting range in japan','2021-07-24'),(201,1002,1,'Asaka shooting range in japan','2021-07-24'),(201,1012,2,'Asaka shooting range in japan','2021-07-24');
@@ -60,41 +57,3 @@ insert into Events values(208,1010,3,'Musashinonomori park','2021-07-24'),(208,1
 insert into Events values(209,1011,1,'Six stadiums across japan','2021-07-21'),(209,1029,2,'Six stadiums across japan','2021-07-21'),(209,1030,3,'Six stadiums across japan','2021-07-21');
 insert into Events values(210,1008,2,'Makuhari messe','2021-08-01'),(210,1023,3,'Makuhari messe','2021-08-01'),(210,1024,1,'Makuhari messe','2021-08-01');
 select * from Events;
-drop table events;
-## populate the number of athlets in each country
-select athlete_country,count(athlete_id)as num_country from athletes group by athlete_country;
-##which country has the highest number of athlets
-select athlete_country from athletes group by athlete_country order by count(athlete_id) desc limit 1;
-##display the athlets in the order of country and games
-select athlete_country,game_id from athletes ;
-###display all the athlets first 4 letters in upper case
-select concat (upper(substr(athlete_name,1,4)),lower(substr(athlete_name,5))) from athletes;
-### display all the athlete starting with "g"
-select * from athletes where athlete_name like 'g%';
-## reverse the athlete name
-select reverse(athlete_name) from athletes;
-## replace the 'winwin' 'w' by 'olympics'
-select replace(athlete_name,"w","winwin") from athletes;
-###give the difference between in and between 
-select * from athletes where athlete_id in(1001,1002,1003,1004);
-select * from athletes where athlete_id between 1001 AND 1010;
-select athlete_name,athlete_country,game_name from athletes,games where athletes.game_id=games.game_id;
-### give the name of the games for which the athlets are associated with?
-select game_name,athlete_name from athletes,games where athletes.game_id=games.game_id;
-select athlete_name,medal_name from athletes,medals where athletes.athlete_id=events.athlete_id;
-select  a.athlete_name,a.athlete_id,e.athlete_id from athletes a left outer join Events e on a.athlete_id=e.athlete_id where e.athlete_id is null;
-select a.athlete_name,g.game_name from games g left outer join athletes a on g.game_id=a.game_id where a.athlete_id is null;
-select * from athletes a inner join games g
- inner join events e inner join medals m on a.game_id=g.game_id and a.athlete_id=e.athlete_id and m.medal_id=e.medal_id;
- select a.athlete_country,sum(case when medal_id=1 then 1 else 0 end) as gold,sum(case when medal_id=2 then 1 else 0 end) as silver,
- sum(case when medal_id=3 then 1 else 0 end) as bronze from  athletes a inner join Events e on a.athlete_id=e.athlete_id group by a.athlete_country;
- select distinct(athlete_country) from athletes;
- select athlete_country from athletes;
- select * from athletes where athlete_name is null;
- select * from athletes where athlete_name is not null;
- select * from athletes where game_id in (select game_id from games) ;
- select count(distinct(game_id)) from athletes;
- select  count( Athlete_country) from athletes group by Athlete_country;
- select athlete_name,Athlete_country,Game_id,rank() over ( partition by game_id order by Athlete_id ) from Athletes;
- select athlete_country,medal_name,game_name from athletes a inner join games g
- inner join events e inner join medals m where a.game_id=g.game_id and a.athlete_id=e.athlete_id and m.medal_id=e.medal_id and a.athlete_country="america";
